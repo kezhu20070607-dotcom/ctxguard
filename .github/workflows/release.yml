@@ -1,0 +1,49 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: build on ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: x86_64-unknown-linux-gnu
+            artifact: ctxguard-linux-x86_64
+            binary: ctxguard
+          - target: x86_64-apple-darwin
+            artifact: ctxguard-macos-x86_64
+            binary: ctxguard
+          - target: aarch64-apple-darwin
+            artifact: ctxguard-macos-aarch64
+            binary: ctxguard
+          - target: x86_64-pc-windows-msvc
+            artifact: ctxguard-windows-x86_64.exe
+            binary: ctxguard.exe
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: ctxguard -> target
+      - run: cargo build --release --target ${{ matrix.target }} --locked
+      - name: Package
+        run: |
+          mkdir -p dist
+          cp target/${{ matrix.target }}/release/${{ matrix.binary }} dist/${{ matrix.artifact }}
+          (cd dist && tar czf ${{ matrix.artifact }}.tar.gz ${{ matrix.artifact }} 2>/dev/null || zip -j ${{ matrix.artifact }}.zip ${{ matrix.artifact }})
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/${{ matrix.artifact }}.tar.gz
+            dist/${{ matrix.artifact }}.zip
