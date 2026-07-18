@@ -34,10 +34,10 @@ jobs:
           sudo mv /tmp/vhs_0.11.0_Linux_x86_64/vhs /usr/local/bin/vhs
           vhs --version
 
-      - name: Install ffmpeg + chrome
+      - name: Install ffmpeg + ttyd
         run: |
           sudo apt-get update
-          sudo apt-get install -y ffmpeg chromium-browser
+          sudo apt-get install -y ffmpeg ttyd
 
       - name: Build demo session JSONL
         run: |
@@ -45,8 +45,6 @@ jobs:
           python3 .github/demo_session.py /tmp/demo-session.jsonl
 
       - name: Render demo.gif
-        env:
-          VHS_BROWSER: chromium-browser
         run: vhs demo.tape
 
       - name: Verify GIF was produced
