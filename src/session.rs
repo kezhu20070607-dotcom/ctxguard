@@ -18,7 +18,8 @@ pub struct TokenSummary {
 
 impl TokenSummary {
     pub fn total_tokens(&self) -> u64 {
-        self.input_tokens + self.output_tokens
+        self.input_tokens
+            + self.output_tokens
             + self.cache_read_input_tokens
             + self.cache_creation_input_tokens
     }
@@ -85,14 +86,22 @@ impl TokenSummary {
         for s in summaries {
             let key = match dim {
                 ByDim::Model => s.model.clone().unwrap_or_else(|| "unknown".into()),
-                ByDim::Day => s.first_ts.as_deref()
+                ByDim::Day => s
+                    .first_ts
+                    .as_deref()
                     .and_then(|t| t.get(..10).map(String::from))
                     .unwrap_or_else(|| "unknown".into()),
-                ByDim::Hour => s.first_ts.as_deref()
+                ByDim::Hour => s
+                    .first_ts
+                    .as_deref()
                     .and_then(|t| t.get(..13).map(String::from))
                     .unwrap_or_else(|| "unknown".into()),
-                ByDim::File => s.file.rsplit(|c| c == '/' || c == '\\')
-                    .next().unwrap_or(&s.file).to_string(),
+                ByDim::File => s
+                    .file
+                    .rsplit(['/', '\\'])
+                    .next()
+                    .unwrap_or(&s.file)
+                    .to_string(),
             };
             *buckets.entry(key).or_insert(0) += s.effective_context();
         }
@@ -108,12 +117,22 @@ impl TokenSummary {
         if sorted.len() > 20 {
             println!("... and {} more", sorted.len() - 20);
         }
-        println!("\ntotal: {} across {} {} buckets", compact(total), sorted.len(), dim.label());
+        println!(
+            "\ntotal: {} across {} {} buckets",
+            compact(total),
+            sorted.len(),
+            dim.label()
+        );
     }
 }
 
 #[derive(Debug, Clone, Copy)]
-pub enum ByDim { Model, Day, Hour, File }
+pub enum ByDim {
+    Model,
+    Day,
+    Hour,
+    File,
+}
 
 impl ByDim {
     pub fn label(&self) -> &'static str {
@@ -150,7 +169,7 @@ impl From<&TokenSummary> for Row {
     fn from(s: &TokenSummary) -> Self {
         let short = s
             .file
-            .rsplit(|c| c == '/' || c == '\\')
+            .rsplit(['/', '\\'])
             .next()
             .unwrap_or(&s.file)
             .to_string();
@@ -178,5 +197,9 @@ fn compact(n: u64) -> String {
 }
 
 fn truncate(s: &str, max: usize) -> String {
-    if s.len() <= max { s.to_string() } else { format!("{}…", &s[..max.saturating_sub(1)]) }
+    if s.len() <= max {
+        s.to_string()
+    } else {
+        format!("{}…", &s[..max.saturating_sub(1)])
+    }
 }

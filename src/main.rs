@@ -83,8 +83,8 @@ fn main() -> Result<()> {
     let cli = Cli::parse();
     match cli.cmd {
         Cmd::Parse { file } => {
-            let summary = parse_file(&file)
-                .with_context(|| format!("failed to parse {}", file.display()))?;
+            let summary =
+                parse_file(&file).with_context(|| format!("failed to parse {}", file.display()))?;
             summary.print_human();
         }
         Cmd::Profile { days, by } => {
@@ -97,7 +97,13 @@ fn main() -> Result<()> {
                 _ => TokenSummary::print_table(&summaries),
             }
         }
-        Cmd::Run { budget, on_full, poll_ms, session, cmd } => {
+        Cmd::Run {
+            budget,
+            on_full,
+            poll_ms,
+            session,
+            cmd,
+        } => {
             run_with_budget(budget, &on_full, poll_ms, session, cmd)?;
         }
     }
@@ -121,8 +127,7 @@ fn run_with_budget(
 
     let session_path = match session_override {
         Some(p) => p,
-        None => most_recent_session()?
-            .context("no session file found; pass --session <path>")?,
+        None => most_recent_session()?.context("no session file found; pass --session <path>")?,
     };
 
     eprintln!(
@@ -143,7 +148,6 @@ fn run_with_budget(
         .with_context(|| format!("failed to spawn {}", program))?;
 
     let mut triggered = false;
-    let mut child_stdout_closed = false;
 
     // Watch the JSONL file for new assistant turns
     let (tx, rx) = channel();
@@ -181,12 +185,12 @@ fn run_with_budget(
                                 ),
                                 "compress" => {
                                     eprintln!("[ctxguard] requesting compact via stdin");
-                                    let _ = child.stdin.as_mut().map(|s| {
+                                    if let Some(mut stdin) = child.stdin.take() {
                                         use std::io::Write;
-                                        let mut h = s;
-                                        let _ = writeln!(h, "/compact");
-                                        let _ = h.flush();
-                                    });
+                                        let _ = writeln!(stdin, "/compact");
+                                        let _ = stdin.flush();
+                                        child.stdin = Some(stdin);
+                                    }
                                 }
                                 "kill" => {
                                     eprintln!("[ctxguard] sending SIGTERM to child (pid={:?})", child.id());
@@ -214,10 +218,7 @@ fn run_with_budget(
             }
         }
 
-        // 3. Heartbeat every ~5s so users see ctxguard is alive
-        if !child_stdout_closed {
-            // (no-op; just structure for future)
-        }
+        // 3. Heartbeat poll — no-op for now
 
         thread::sleep(Duration::from_millis(poll_ms));
     }
@@ -275,7 +276,10 @@ fn parse_file(path: &PathBuf) -> Result<TokenSummary> {
             Ok(v) => v,
             Err(_) => continue,
         };
-        let ts = val.get("timestamp").and_then(|v| v.as_str()).map(String::from);
+        let ts = val
+            .get("timestamp")
+            .and_then(|v| v.as_str())
+            .map(String::from);
         if let Some(t) = &ts {
             if first_ts.is_none() {
                 first_ts = Some(t.clone());
@@ -296,10 +300,22 @@ fn parse_file(path: &PathBuf) -> Result<TokenSummary> {
         }
         if let Some(usage) = msg.get("usage") {
             turns += 1;
-            input_tokens += usage.get("input_tokens").and_then(|v| v.as_u64()).unwrap_or(0);
-            output_tokens += usage.get("output_tokens").and_then(|v| v.as_u64()).unwrap_or(0);
-            cache_read += usage.get("cache_read_input_tokens").and_then(|v| v.as_u64()).unwrap_or(0);
-            cache_write += usage.get("cache_creation_input_tokens").and_then(|v| v.as_u64()).unwrap_or(0);
+            input_tokens += usage
+                .get("input_tokens")
+                .and_then(|v| v.as_u64())
+                .unwrap_or(0);
+            output_tokens += usage
+                .get("output_tokens")
+                .and_then(|v| v.as_u64())
+                .unwrap_or(0);
+            cache_read += usage
+                .get("cache_read_input_tokens")
+                .and_then(|v| v.as_u64())
+                .unwrap_or(0);
+            cache_write += usage
+                .get("cache_creation_input_tokens")
+                .and_then(|v| v.as_u64())
+                .unwrap_or(0);
         }
     }
 
