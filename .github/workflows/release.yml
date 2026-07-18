@@ -45,10 +45,17 @@ jobs:
           workspaces: ctxguard -> target
       - run: cargo build --release --locked
       - name: Package
+        # Windows bsdtar treats `2>/dev/null` as a literal `null` path and dies
+        # with "Could not find a part of the path 'D:\dev\null'". Use platform-
+        # aware archive: PowerShell Compress-Archive on Windows, tar everywhere else.
         run: |
           mkdir -p dist
           cp target/release/${{ matrix.binary }} dist/${{ matrix.artifact }}
-          (cd dist && tar czf ${{ matrix.artifact }}.tar.gz ${{ matrix.artifact }} 2>/dev/null || zip -j ${{ matrix.artifact }}.zip ${{ matrix.artifact }})
+          if [ "$RUNNER_OS" = "Windows" ]; then
+            cd dist && powershell -NoProfile -Command "Compress-Archive -Force -Path '${{ matrix.artifact }}' -DestinationPath '${{ matrix.artifact }}.zip'" && cd ..
+          else
+            tar -C dist -czf dist/${{ matrix.artifact }}.tar.gz ${{ matrix.artifact }}
+          fi
       - uses: softprops/action-gh-release@v2
         with:
           files: |
