@@ -64,13 +64,22 @@ brew install ctxguard   # coming soon
 # Inspect a past Claude Code session
 ctxguard parse ~/.claude/projects/<proj>/<session>.jsonl
 
+# Inspect a past Codex CLI rollout
+ctxguard parse --tool codex ~/.codex/archived_sessions/rollout-*.jsonl
+
 # Aggregate token usage across your last week of work
 ctxguard profile --days 7
+
+# Aggregate across your Codex sessions
+ctxguard profile --tool codex --days 30 --by day
 
 # Wrap a live agent run with a hard budget
 ctxguard run --budget 80000 --on-full warn -- claude "fix the auth bug"
 ctxguard run --budget 80000 --on-full compress -- claude "refactor module X"
 ctxguard run --budget 80000 --on-full kill -- claude "try everything"
+
+# Same for Codex CLI
+ctxguard run --tool codex --budget 200000 --on-full warn -- codex "add OAuth"
 ```
 
 ### Why three modes?
@@ -96,13 +105,14 @@ ctxguard run --budget 80000 --on-full kill -- claude "try everything"
 - [ ] **W3** — `ctxguard profile --by tool|hour|model` to break down where tokens go.
 - [ ] **W4** — Codex + Aider adapters (right now we only parse Claude Code JSONL).
 
-## Benchmarks (real, W3)
+## Benchmarks (real, W3 + Codex adapter)
 
 Single 14 MB Claude Code session JSONL on Windows 11 / Node 24 / Rust 1.94:
 
 | tool | operation | wall time | binary size | dependency footprint |
 |---|---|---|---|---|
-| `ctxguard` | `parse <file>` | **37 ms** | 1.1 MB | zero (single binary) |
+| `ctxguard` | `parse <file>` (Claude) | **37 ms** | 1.1 MB | zero (single binary) |
+| `ctxguard` | `parse --tool codex <rollout>` (3.9 MB) | **24 ms** | 1.1 MB | zero |
 | `ctxguard` | `profile --days 7` (all sessions) | **451 ms** | 1.1 MB | zero |
 | `ccusage` | `daily --json` (one project) | **30 572 ms** | 38 MB (Node + npm tree) | 247 packages |
 

@@ -8,6 +8,8 @@
 
 **C** — Show HN: ctxguard – a Rust CLI that catches context-window blowups before they cost $1400/wk
 
+**D** *(new)* — Show HN: ctxguard – context-window budgets for Claude Code AND Codex CLI, in 24 ms
+
 ## Body (use A or C title; body works with all)
 
 ```text
