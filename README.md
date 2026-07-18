@@ -2,7 +2,9 @@
 
 > Context-window budget enforcer for AI coding agents — `ulimit` for Claude Code, Codex, and Aider.
 
-![demo](assets/demo.svg)
+![demo](demo.gif)
+
+*[30 s recording auto-rendered by GitHub Actions on every push to demo.tape](.github/workflows/render-demo.yml)*
 
 [![CI](https://img.shields.io/github/actions/workflow/status/zhuke-ai/ctxguard/ci.yml?branch=master&label=CI)](https://github.com/zhuke-ai/ctxguard/actions)
 [![release](https://img.shields.io/github/v/release/zhuke-ai/ctxguard?label=release)](https://github.com/zhuke-ai/ctxguard/releases/latest)

@@ -18,7 +18,9 @@ I built ctxguard after one of my Claude Code sessions hit 558M context tokens
 caching hides cache_read from your bill — but the model was reading the same
 3 files 30 times per turn.
 
-![demo](https://raw.githubusercontent.com/zhuke-ai/ctxguard/master/assets/demo.svg)
+![demo](https://raw.githubusercontent.com/zhuke-ai/ctxguard/master/demo.gif)
+
+*(30 s terminal recording auto-rendered by CI on every push — refreshes itself)*
 
 ctxguard is a single Rust binary that does three things:
 
