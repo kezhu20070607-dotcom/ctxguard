@@ -6,10 +6,10 @@
 
 *[30 s recording auto-rendered by GitHub Actions on every push to demo.tape](.github/workflows/render-demo.yml)*
 
-[![CI](https://img.shields.io/github/actions/workflow/status/kezhu20070607-dotcom/ctxguard/ci.yml?branch=master&label=CI)](https://github.com/kezhu20070607-dotcom/ctxguard/actions)
-[![release](https://img.shields.io/github/v/release/kezhu20070607-dotcom/ctxguard?label=release)](https://github.com/kezhu20070607-dotcom/ctxguard/releases/latest)
+[![CI](https://img.shields.io/github/actions/workflow/status/kezhu-20070607/ctxguard/ci.yml?branch=master&label=CI)](https://github.com/kezhu-20070607/ctxguard/actions)
+[![release](https://img.shields.io/github/v/release/kezhu-20070607/ctxguard?label=release)](https://github.com/kezhu-20070607/ctxguard/releases/latest)
 [![license](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue.svg)](LICENSE-MIT)
-![stars](https://img.shields.io/github/stars/kezhu20070607-dotcom/ctxguard?style=social)
+![stars](https://img.shields.io/github/stars/kezhu-20070607/ctxguard?style=social)
 [![crates.io](https://img.shields.io/crates/v/ctxguard.svg)](https://crates.io/crates/ctxguard)
 [![Rust](https://img.shields.io/badge/rust-1.74%2B-orange.svg)](https://www.rust-lang.org)
 
@@ -66,7 +66,7 @@ cargo install ctxguard
 brew install ctxguard   # coming soon
 ```
 
-[![CI](https://github.com/kezhu20070607-dotcom/ctxguard/actions/workflows/ci.yml/badge.svg)](https://github.com/kezhu20070607-dotcom/ctxguard/actions)
+[![CI](https://github.com/kezhu-20070607/ctxguard/actions/workflows/ci.yml/badge.svg)](https://github.com/kezhu-20070607/ctxguard/actions)
 
 ## Usage
 

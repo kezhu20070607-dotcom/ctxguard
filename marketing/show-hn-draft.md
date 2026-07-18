@@ -20,7 +20,7 @@ I built ctxguard after one of my Claude Code sessions hit 558M context tokens
 caching hides cache_read from your bill — but the model was reading the same
 3 files 30 times per turn.
 
-![demo](https://raw.githubusercontent.com/kezhu20070607-dotcom/ctxguard/master/demo.gif)
+![demo](https://raw.githubusercontent.com/kezhu-20070607/ctxguard/master/demo.gif)
 
 *(30 s terminal recording auto-rendered by CI on every push — refreshes itself)*
 
@@ -53,7 +53,7 @@ Differences from existing tools:
   • Single binary, no daemon, no Docker.
 
 Install: `cargo install ctxguard` (or grab a binary from GitHub Releases)
-Source: https://github.com/kezhu20070607-dotcom/ctxguard
+Source: https://github.com/kezhu-20070607/ctxguard
 Tested on Linux/macOS/Windows (CI runs all three).
 
 Happy to answer questions or take PRs for Codex/Aider adapters.
@@ -63,5 +63,5 @@ Happy to answer questions or take PRs for Codex/Aider adapters.
 
 1. Go to https://news.ycombinator.com/submit
 2. Paste title + body
-3. URL: https://github.com/kezhu20070607-dotcom/ctxguard
+3. URL: https://github.com/kezhu-20070607/ctxguard
 4. Best time: weekday 8-10am US Eastern (peak HN traffic)

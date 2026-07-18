@@ -21,4 +21,4 @@ All notable changes to ctxguard are documented in this file.
 - 7 days of one user's sessions: 2.1 B context tokens, top session 558 M (2790× the
   200k standard window), cache_read accounts for ~95% of every long session.
 
-[0.1.0]: https://github.com/kezhu20070607-dotcom/ctxguard/releases/tag/v0.1.0
+[0.1.0]: https://github.com/kezhu-20070607/ctxguard/releases/tag/v0.1.0
